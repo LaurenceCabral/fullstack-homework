@@ -22,11 +22,11 @@ const calculateChange = function calculateChange(amount) {
   ];
   const result = [];
 
-  coins.forEach((coin) => {
-    const count = Math.floor(cents / coin.value);
-    cents %= coin.value;
+  coins.forEach(({ value, singular, plural }) => {
+    const count = Math.floor(cents / value);
+    cents %= value;
     if (count > 0) {
-      result.push(`${count} ${count === 1 ? coin.singular : coin.plural}`);
+      result.push(`${count} ${count === 1 ? singular : plural}`);
     }
   });
 

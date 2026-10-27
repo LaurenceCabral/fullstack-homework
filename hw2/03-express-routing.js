@@ -13,7 +13,10 @@ const port = process.env.PORT || 5001;
 // For other routes, such as http://localhost:5001/other, this exercise should return a status code 404 with '404 - page not found' in html format
 
 app.get('/welcome', (req, res) => {
-  res.status(200).type('html').send('<h1>Welcome to my Express routing exercise!</h1>');
+  res
+    .status(200)
+    .type('html')
+    .send('<h1>Welcome to my Express routing exercise!</h1>');
 });
 
 // Add your code here
@@ -22,21 +25,33 @@ app.get('/redirect', (req, res) => {
 });
 
 app.get('/redirected', (req, res) => {
-  res.status(200).type('html').send('<h1>You have arrived at the redirected page!</h1>');
+  res
+    .status(200)
+    .type('html')
+    .send('<h1>You have arrived at the redirected page!</h1>');
 });
 
 app.get('/cache', (req, res) => {
   res.set('Cache-Control', 'public, max-age=86400');
-  res.status(200).type('html').send('<p>this resource was cached</p>');
+  res
+    .status(200)
+    .type('html')
+    .send('<p>this resource was cached</p>');
 });
 
 app.get('/cookie', (req, res) => {
   res.cookie('hello', 'world');
-  res.status(200).type('text').send('cookies… yummm');
+  res
+    .status(200)
+    .type('text')
+    .send('cookies… yummm');
 });
 
 app.use((req, res) => {
-  res.status(404).type('html').send('<h1>404 - page not found</h1>');
+  res
+    .status(404)
+    .type('html')
+    .send('<h1>404 - page not found</h1>');
 });
 
 app.listen(port, () => {
