@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+
+const http = require('http');
+const debug = require('debug')('express-locallibrary-tutorial:server');
+const mongoose = require('mongoose');
+const app = require('../app');
+
+const normalizePort = function normalizePort(value) {
+  const parsedPort = Number.parseInt(value, 10);
+  if (Number.isNaN(parsedPort)) {
+    return value;
+  }
+  return parsedPort >= 0 ? parsedPort : false;
+};
+
+const port = normalizePort(process.env.PORT || '3000');
+const mongoDB = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/local_library';
+const server = http.createServer(app);
+app.set('port', port);
+
+const onError = function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
+  switch (error.code) {
+    case 'EACCES':
+      process.stderr.write(`${bind} requires elevated privileges\n`);
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      process.stderr.write(`${bind} is already in use\n`);
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+};
+
+const onListening = function onListening() {
+  const address = server.address();
+  const bind = typeof address === 'string' ? `pipe ${address}` : `port ${address.port}`;
+  debug(`Listening on ${bind}`);
+  process.stdout.write(`Local Library running at http://localhost:${address.port}/catalog\n`);
+};
+
+const startServer = function startServer() {
+  server.on('error', onError);
+  server.on('listening', onListening);
+  server.listen(port);
+};
+
+const connectMongoose = async function connectMongoose() {
+  await mongoose.connect(mongoDB, { serverSelectionTimeoutMS: 5000 });
+  mongoose.connection.on('error', (error) => {
+    process.stderr.write(`MongoDB connection error: ${error.message}\n`);
+  });
+  mongoose.connection.on('disconnected', () => {
+    process.stderr.write('MongoDB disconnected\n');
+  });
+};
+
+connectMongoose()
+  .then(startServer)
+  .catch((error) => {
+    process.stderr.write(`Failed to connect to MongoDB: ${error.message}\n`);
+    process.exit(1);
+  });
