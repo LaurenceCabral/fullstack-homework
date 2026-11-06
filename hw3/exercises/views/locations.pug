@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  each group in types
+    section
+      h2= group.name
+      p Number of locations: #{group.count}
+  else
+    p No locations were returned.

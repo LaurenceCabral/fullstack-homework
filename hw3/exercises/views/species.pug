@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  each group in species
+    section
+      h2= group.name
+      p Number of characters: #{group.characters.length}
+      ul
+        each character in group.characters
+          li= character
+  else
+    p No species were returned.

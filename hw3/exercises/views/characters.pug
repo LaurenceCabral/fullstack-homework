@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  each character in characters
+    article
+      h2= character.name
+      if character.image
+        img.character-image(src=character.image alt=character.name)
+      else
+        p Picture not available.
+      p Species: #{character.species}
+      p Status: #{character.status}
+  else
+    p No characters were returned.
